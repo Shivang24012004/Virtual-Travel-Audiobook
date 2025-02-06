@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
     // Create new socket connection
     const newSocket = io(`${import.meta.env.VITE_APP_FOO}`, {
       withCredentials: true,
-      transports: ['polling'],
+      transports: ['websocket'],
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5, // Continuous reconnection attempts
