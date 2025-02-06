@@ -44,7 +44,7 @@ app.get("/",async(req,res)=>{
   }
 })
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; 
 server.listen(PORT, () => {
     dotenv.config()
     connectDB();
