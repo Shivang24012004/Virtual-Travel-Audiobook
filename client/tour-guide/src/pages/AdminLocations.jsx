@@ -14,7 +14,7 @@ const AdminLocations = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await axios.get("/api/locations");
+      const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations`);
       setLocations(response.data);
       setLoading(false);
     } catch (err) {
@@ -26,7 +26,7 @@ const AdminLocations = () => {
   const deleteLocation = async (id) => {
     if (window.confirm("Are you sure you want to delete this location?")) {
       try {
-        await axios.delete(`/api/locations/${id}`);
+        await axios.delete(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`);
         setLocations(locations.filter((location) => location._id !== id));
       } catch (err) {
         setError("Failed to delete location");

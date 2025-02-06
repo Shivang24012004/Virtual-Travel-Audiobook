@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     }
 
     // Create new socket connection
-    const newSocket = io("http://localhost:5000", {
+    const newSocket = io(`${import.meta.env.VITE_APP_FOO}`, {
       withCredentials: true,
       transports: ['websocket'],
       autoConnect: true,
@@ -153,7 +153,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        `/api/auth/login`,
+        `${import.meta.env.VITE_APP_FOO}/api/auth/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -187,7 +187,7 @@ export function AuthProvider({ children }) {
       }
 
       // Logout API call
-      await axios.post(`/api/auth/logout`, {}, { withCredentials: true });
+      await axios.post(`${import.meta.env.VITE_APP_FOO}/api/auth/logout`, {}, { withCredentials: true });
       
       // Clear user data
       setUser(null);

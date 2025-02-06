@@ -22,7 +22,7 @@ const AudioFileManager = ({ locationId, audioFiles, onAudioFileChange }) => {
     formData.append("description", audioDescription)
 
     try {
-      const response = await axios.post(`/api/audio/${locationId}`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_APP_FOO}/api/audio/${locationId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       onAudioFileChange([...audioFiles, response.data])
@@ -41,7 +41,7 @@ const AudioFileManager = ({ locationId, audioFiles, onAudioFileChange }) => {
     setLoading(true)
     setError("")
     try {
-      const response = await axios.delete(`/api/audio/${locationId}/${audioFileId}`)
+      const response = await axios.delete(`${import.meta.env.VITE_APP_FOO}/api/audio/${locationId}/${audioFileId}`)
       if (response.status === 200) {
         onAudioFileChange(audioFiles.filter((file) => file._id !== audioFileId))
       } else {
@@ -59,7 +59,7 @@ const AudioFileManager = ({ locationId, audioFiles, onAudioFileChange }) => {
     setLoading(true)
     try {
       const audioToUpdate = audioFiles.find((file) => file._id === audioFileId)
-      const response = await axios.put(`/api/audio/${locationId}/${audioFileId}`, {
+      const response = await axios.put(`${import.meta.env.VITE_APP_FOO}/api/audio/${locationId}/${audioFileId}`, {
         title: audioToUpdate.title,
         description: audioToUpdate.description,
       })
