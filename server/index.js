@@ -19,11 +19,7 @@ const server = createServer(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    callback(null, origin);
-  },
+  origin: ["https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app"],
   credentials: true
 }));
 
