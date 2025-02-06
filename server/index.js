@@ -34,6 +34,16 @@ app.use('/api/auth', authRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/audio', audioRoutes);
 
+app.get("/",async(req,res)=>{
+  try {
+    // dotenv.config()
+    // connectDB();
+    res.status(200).json({"Status":"Application is working"});
+  } catch (error) {
+    res.status(500).json({"Status":"Application is not working"});
+  }
+})
+
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
     dotenv.config()
