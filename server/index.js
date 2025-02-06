@@ -19,7 +19,11 @@ const server = createServer(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ["*"],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    callback(null, origin);
+  },
   credentials: true
 }));
 
