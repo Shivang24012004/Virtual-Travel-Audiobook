@@ -8,7 +8,9 @@ import authRoutes from './routes/auth.js';
 import locationRoutes from './routes/locations.js';
 import audioRoutes from './routes/audio.js';
 import dotenv from "dotenv"
+dotenv.config()
 
+connectDB();
 const app = express();
 const server = createServer(app);
 
@@ -47,7 +49,5 @@ app.get("/",async(req,res)=>{
 
 const PORT = process.env.PORT || 5000; 
 server.listen(PORT, () => {
-    dotenv.config()
-    connectDB();
   console.log(`Server running on port ${PORT}`);
 });
