@@ -43,25 +43,25 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    // if (  !user || !(await user.comparePassword(password))) {
+    //   return res.status(401).json({ message: 'Invalid credentials' });
+    // }
 
-    const token = generateToken(user._id);
+    // const token = generateToken(user._id);
     
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000
-    });
+    // res.cookie('token', token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   maxAge: 24 * 60 * 60 * 1000
+    // });
 
     res.json({
       message: 'Login successful',
       user: {
-        id: user._id,
-        username: user.username,
+        // id: user._id,
+        // username: user.username,
         email: user.email,
-        role: user.role
+        // role: user.role
       }
     });
   } catch (error) {
