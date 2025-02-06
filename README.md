@@ -1,2 +1,2 @@
 # Virtual-Travel-Audiobook
-Proximity based vitual tour guide
+Proximity based vitual tour guide audiobook library
