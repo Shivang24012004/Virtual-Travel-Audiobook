@@ -33,6 +33,8 @@ const Register = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+      },{
+        withCredentials:true
       })
       console.log(response)
       setSuccess(response.data.message)

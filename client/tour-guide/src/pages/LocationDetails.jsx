@@ -23,7 +23,9 @@ const LocationDetails = () => {
   useEffect(() => {
     const fetchLocationDetails = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`)
+        const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`,{
+          withCredentials:true
+        })
         setLocation(response.data)
       } catch (err) {
         setError("Failed to fetch location details")

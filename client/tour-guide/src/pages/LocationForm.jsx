@@ -29,7 +29,9 @@ const LocationForm = () => {
 
   const fetchLocation = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`,{
+        withCredentials:true
+      })
       setLocation(response.data)
     } catch (err) {
       setError("Failed to fetch location")
@@ -43,9 +45,13 @@ const LocationForm = () => {
 
     try {
       if (id) {
-        await axios.put(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, location)
+        await axios.put(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, location,{
+          withCredentials:true
+        })
       } else {
-        await axios.post(`${import.meta.env.VITE_APP_FOO}/api/locations`, location)
+        await axios.post(`${import.meta.env.VITE_APP_FOO}/api/locations`, location,{
+          withCredentials:true
+        })
       }
       navigate("/admin/locations")
     } catch (err) {
@@ -88,6 +94,7 @@ const LocationForm = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_APP_FOO}/api/audio/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        withCredentials:true
       })
       setLocation((prev) => ({
         ...prev,
@@ -103,7 +110,9 @@ const LocationForm = () => {
 
   const handleAudioDelete = async (audioFileId) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_APP_FOO}/api/audio/${id}/${audioFileId}`)
+      await axios.delete(`${import.meta.env.VITE_APP_FOO}/api/audio/${id}/${audioFileId}`,{
+        withCredentials:true
+      })
       setLocation((prev) => ({
         ...prev,
         audioFiles: prev.audioFiles.filter((file) => file._id !== audioFileId),
