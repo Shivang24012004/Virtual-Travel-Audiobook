@@ -18,7 +18,7 @@ connectDB();
 
 
 app.use(cors({
-  origin: ["https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app","http://localhost:5173"],
+  origin: ["*","http://localhost:5173"],
   credentials: true
 }));
 // Middleware
