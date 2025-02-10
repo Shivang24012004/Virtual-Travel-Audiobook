@@ -10,9 +10,9 @@ import audioRoutes from './routes/audio.js';
 import dotenv from "dotenv"
 dotenv.config()
 
-connectDB();
 const app = express();
 const server = createServer(app);
+connectDB();
 
 // Connect to MongoDB
 
