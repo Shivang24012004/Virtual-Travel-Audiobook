@@ -15,13 +15,16 @@ const server = createServer(app);
 connectDB();
 
 // Connect to MongoDB
-
+app.set('trust proxy', 1);  //temp
 
 app.use(cors({
   origin: ["http://localhost:5173"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']  //temp
 }));
-// Middleware
+app.options('*', cors()); //temp
+
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }))
