@@ -18,7 +18,7 @@ connectDB();
 app.set('trust proxy', 1);  //temp
 
 app.use(cors({
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173","https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app"],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']  //temp
 }));
