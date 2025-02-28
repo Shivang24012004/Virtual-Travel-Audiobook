@@ -1,6 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { MapPin, Info, Mic, Save, Loader2 } from "lucide-react"
 import AudioFileManager from "../components/AudioFileManager"
 
 const LocationForm = () => {
@@ -17,9 +20,6 @@ const LocationForm = () => {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [audioFile, setAudioFile] = useState(null)
-  const [audioTitle, setAudioTitle] = useState("")
-  const [audioDescription, setAudioDescription] = useState("")
 
   useEffect(() => {
     if (id) {
@@ -29,8 +29,8 @@ const LocationForm = () => {
 
   const fetchLocation = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`,{
-        withCredentials:true
+      const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, {
+        withCredentials: true,
       })
       setLocation(response.data)
     } catch (err) {
@@ -45,12 +45,12 @@ const LocationForm = () => {
 
     try {
       if (id) {
-        await axios.put(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, location,{
-          withCredentials:true
+        await axios.put(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, location, {
+          withCredentials: true,
         })
       } else {
-        await axios.post(`${import.meta.env.VITE_APP_FOO}/api/locations`, location,{
-          withCredentials:true
+        await axios.post(`${import.meta.env.VITE_APP_FOO}/api/locations`, location, {
+          withCredentials: true,
         })
       }
       navigate("/admin/locations")
@@ -79,113 +79,108 @@ const LocationForm = () => {
     }
   }
 
-  const handleAudioUpload = async (e) => {
-    e.preventDefault()
-    if (!audioFile) {
-      setError("Please select an audio file")
-      return
-    }
-
-    const formData = new FormData()
-    formData.append("audio", audioFile)
-    formData.append("title", audioTitle)
-    formData.append("description", audioDescription)
-
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_APP_FOO}/api/audio/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials:true
-      })
-      setLocation((prev) => ({
-        ...prev,
-        audioFiles: [...prev.audioFiles, response.data],
-      }))
-      setAudioFile(null)
-      setAudioTitle("")
-      setAudioDescription("")
-    } catch (err) {
-      setError("Failed to upload audio file")
-    }
-  }
-
-  const handleAudioDelete = async (audioFileId) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_APP_FOO}/api/audio/${id}/${audioFileId}`,{
-        withCredentials:true
-      })
-      setLocation((prev) => ({
-        ...prev,
-        audioFiles: prev.audioFiles.filter((file) => file._id !== audioFileId),
-      }))
-    } catch (err) {
-      setError("Failed to delete audio file")
-    }
-  }
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">{id ? "Edit" : "Add"} Location</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">{id ? "Edit" : "Add"} Location</h1>
+      {error && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div>
-          <label className="block mb-1">Name:</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+            <MapPin className="inline-block mr-2" size={18} />
+            Name
+          </label>
           <input
+            id="name"
             type="text"
             name="name"
             value={location.name}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border rounded"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
         <div>
-          <label className="block mb-1">Description:</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+            <Info className="inline-block mr-2" size={18} />
+            Description
+          </label>
           <textarea
+            id="description"
             name="description"
             value={location.description}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
           />
         </div>
-        <div>
-          <label className="block mb-1">Latitude:</label>
-          <input
-            type="number"
-            name="latitude"
-            value={location.coordinates.coordinates[1]}
-            onChange={handleChange}
-            required
-            step="any"
-            className="w-full px-3 py-2 border rounded"
-          />
+        <div className="flex space-x-4">
+          <div className="w-1/2">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="latitude">
+              Latitude
+            </label>
+            <input
+              id="latitude"
+              type="number"
+              name="latitude"
+              value={location.coordinates.coordinates[1]}
+              onChange={handleChange}
+              required
+              step="any"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="w-1/2">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="longitude">
+              Longitude
+            </label>
+            <input
+              id="longitude"
+              type="number"
+              name="longitude"
+              value={location.coordinates.coordinates[0]}
+              onChange={handleChange}
+              required
+              step="any"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block mb-1">Longitude:</label>
-          <input
-            type="number"
-            name="longitude"
-            value={location.coordinates.coordinates[0]}
-            onChange={handleChange}
-            required
-            step="any"
-            className="w-full px-3 py-2 border rounded"
-          />
+        <div className="flex items-center justify-between">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2" size={18} />
+                Save Location
+              </>
+            )}
+          </button>
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          {loading ? "Saving..." : "Save Location"}
-        </button>
       </form>
 
       {id && (
-        <AudioFileManager
-          locationId={id}
-          audioFiles={location.audioFiles}
-          onAudioFileChange={(newAudioFiles) => setLocation((prev) => ({ ...prev, audioFiles: newAudioFiles }))}
-        />
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+            <Mic className="mr-2" size={24} />
+            Audio Files
+          </h2>
+          <AudioFileManager
+            locationId={id}
+            audioFiles={location.audioFiles}
+            onAudioFileChange={(newAudioFiles) => setLocation((prev) => ({ ...prev, audioFiles: newAudioFiles }))}
+          />
+        </div>
       )}
     </div>
   )

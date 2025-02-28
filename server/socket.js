@@ -8,7 +8,7 @@ export const initializeSocket = (server) => {
   dotenv.config()
   const io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:3000',
+      origin: process.env.CLIENT_URL || 'http://localhost:5173' || 'http://localhost:3000',
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization"]
     }
