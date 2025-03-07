@@ -5,9 +5,10 @@
       "destination": "/"
     }
   ],
-  "functions":{
-    "api/cron.js":{
-      "cron":"*/30 * * * *"
+  "crons": [
+    {
+      "path": "/api/cron.js",
+      "schedule": "*/30 * * * *"
     }
-  }
+  ]
 }
