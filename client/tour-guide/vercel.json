@@ -4,5 +4,10 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ]
+  ],
+  "functions":{
+    "api/cron.js":{
+      "cron":"*/30 * * * *"
+    }
+  }
 }
