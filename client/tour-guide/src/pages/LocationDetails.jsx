@@ -11,7 +11,7 @@ import { Loader, MapPin, Music, Info, Globe, Clock } from "lucide-react"
 // Fix for default marker icon issue in Leaflet
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconRetinaUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 })
@@ -21,6 +21,42 @@ const LocationDetails = () => {
   const [location, setLocation] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [locationName,setLocationName] = useState("");
+
+  const reverseGeocode = async ([long, lat]) => {
+    try {
+      // Note: Nominatim expects params as lat/lon but your GeoJSON likely provides as [long, lat]
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse`, {
+          params: {
+            format: 'json',
+            lat: lat,
+            lon: long,
+            zoom: 18,
+            addressdetails: 1
+          },
+          headers: {
+            // Required by Nominatim's usage policy
+            'User-Agent': 'TourGuideApp/1.0',
+            'Accept-Language': 'en'
+          }
+        }
+      );
+      
+      // console.log(response.data.address.county);
+      
+      // Update the state with location name
+      if (response.data && response.data.address.county) {
+        console.log(response.data.address.county)
+        setLocationName(response.data.address.county);
+      } else {
+        setLocationName("Unknown location");
+      }
+    } catch (error) {
+      console.log("Can't reverse geo-encode", error);
+      setLocationName("Location information unavailable");
+    }
+  }
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
@@ -28,6 +64,8 @@ const LocationDetails = () => {
         const response = await axios.get(`${import.meta.env.VITE_APP_FOO}/api/locations/${id}`, {
           withCredentials: true,
         })
+        
+        reverseGeocode(response.data.coordinates.coordinates);
         setLocation(response.data)
       } catch (err) {
         setError("Failed to fetch location details")
@@ -112,7 +150,7 @@ const LocationDetails = () => {
               </div>
               <div className="flex items-center">
                 <Globe className="w-6 h-6 mr-2 text-indigo-600" />
-                <span>Region: {location.region || "Not specified"}</span>
+                <span>Region: {locationName || "Not specified"}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="w-6 h-6 mr-2 text-indigo-600" />

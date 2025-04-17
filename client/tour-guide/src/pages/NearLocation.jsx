@@ -1,23 +1,26 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
-import "leaflet/dist/leaflet.css"
-import L from "leaflet"
-import { useAuth } from "../contexts/AuthContext"
-import { MapPin, Loader } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { useAuth } from "../contexts/AuthContext";
+import { MapPin, Loader } from "lucide-react";
 
 // Fix for default marker icon issue in Leaflet
-delete L.Icon.Default.prototype._getIconUrl
+delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-})
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
-const DEFAULT_CENTER = [50.879, 4.6997]
-const DEFAULT_ZOOM = 13
+const DEFAULT_CENTER = [50.879, 4.6997];
+const DEFAULT_ZOOM = 13;
 
 const DynamicMap = ({ center, zoom, locations, userLocation }) => {
   return (
@@ -37,76 +40,97 @@ const DynamicMap = ({ center, zoom, locations, userLocation }) => {
         </Marker>
       )}
       {locations.map((loc) => {
-        if (loc?.coordinates && loc.coordinates.length === 2) {
+        if (loc?.coordinates && loc.coordinates.coordinates.length === 2) {
+          // Create a custom colored icon
+          const customIcon = new L.Icon({
+            iconUrl:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+            shadowUrl:
+              "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41],
+          });
+
           return (
-            <Marker key={loc._id} position={[loc.coordinates[1], loc.coordinates[0]]}>
+            <Marker
+              key={loc._id}
+              position={[
+                loc.coordinates.coordinates[1],
+                loc.coordinates.coordinates[0],
+              ]}
+              icon={customIcon}
+            >
               <Popup>{loc.name}</Popup>
             </Marker>
-          )
+          );
         }
-        return null
+        return null;
       })}
     </MapContainer>
-  )
-}
+  );
+};
 
 const NearLocation = () => {
-  const { socket, location } = useAuth()
-  const [nearbyLocations, setNearbyLocations] = useState([])
-  const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER)
-  const [isLoading, setIsLoading] = useState(true)
-  const [threshold, setThreshold] = useState(5)
-  const [inputThreshold, setInputThreshold] = useState("5")
+  const { socket, location } = useAuth();
+  const [nearbyLocations, setNearbyLocations] = useState([]);
+  const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
+  const [isLoading, setIsLoading] = useState(true);
+  const [threshold, setThreshold] = useState(5);
+  const [inputThreshold, setInputThreshold] = useState("5");
 
   useEffect(() => {
-    if (!socket) return
+    if (!socket) return;
 
     const handleNearbyLocations = (locations) => {
-      console.log("Nearby locations event received:", locations)
-      setNearbyLocations(locations)
-      setIsLoading(false)
-    }
+      // console.log("Nearby locations event received:", locations);
+      setNearbyLocations(locations);
+      setIsLoading(false);
+    };
 
     const handleLocationUpdate = (newLocation) => {
-      console.log("Location update received:", newLocation)
+      // console.log("Location update received:", newLocation);
       if (newLocation && newLocation.latitude && newLocation.longitude) {
-        setMapCenter([newLocation.latitude, newLocation.longitude])
+        setMapCenter([newLocation.latitude, newLocation.longitude]);
       }
-    }
+    };
 
-    socket.on("nearbyLocations", handleNearbyLocations)
-    socket.on("locationUpdate", handleLocationUpdate)
+    socket.on("nearbyLocations", handleNearbyLocations);
+    socket.on("locationUpdate", handleLocationUpdate);
 
     return () => {
-      socket.off("nearbyLocations", handleNearbyLocations)
-      socket.off("locationUpdate", handleLocationUpdate)
-    }
-  }, [socket])
+      socket.off("nearbyLocations", handleNearbyLocations);
+      socket.off("locationUpdate", handleLocationUpdate);
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (location && location.latitude && location.longitude) {
-      setMapCenter([location.latitude, location.longitude])
+      setMapCenter([location.latitude, location.longitude]);
     }
-  }, [location])
+  }, [location]);
 
   const handleThresholdChange = (e) => {
-    setInputThreshold(e.target.value)
-  }
+    setInputThreshold(e.target.value);
+  };
 
   const handleThresholdSubmit = (e) => {
-    e.preventDefault()
-    const newThreshold = Number.parseFloat(inputThreshold)
+    e.preventDefault();
+    const newThreshold = Number.parseFloat(inputThreshold);
     if (!isNaN(newThreshold) && newThreshold > 0) {
-      setThreshold(newThreshold)
-      setIsLoading(true)
+      setThreshold(newThreshold);
+      setIsLoading(true);
     } else {
-      alert("Please enter a valid positive number for the threshold.")
+      alert("Please enter a valid positive number for the threshold.");
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-indigo-700">Nearby Locations</h1>
+      <h1 className="text-3xl font-bold mb-6 text-indigo-700">
+        Nearby Locations
+      </h1>
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <div style={{ width: "100%", height: "400px", marginBottom: "20px" }}>
           {isLoading ? (
@@ -115,21 +139,30 @@ const NearLocation = () => {
               <span className="ml-2 text-lg text-gray-600">Loading map...</span>
             </div>
           ) : (
-            <DynamicMap center={mapCenter} zoom={DEFAULT_ZOOM} locations={nearbyLocations} userLocation={location} />
+            <DynamicMap
+              center={mapCenter}
+              zoom={DEFAULT_ZOOM}
+              locations={nearbyLocations}
+              userLocation={location}
+            />
           )}
         </div>
       </div>
       {isLoading ? (
         <div className="flex items-center justify-center h-32 bg-gray-100 rounded-lg">
           <Loader className="w-8 h-8 text-indigo-600 animate-spin" />
-          <span className="ml-2 text-lg text-gray-600">Loading nearby locations...</span>
+          <span className="ml-2 text-lg text-gray-600">
+            Loading nearby locations...
+          </span>
         </div>
       ) : nearbyLocations.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {nearbyLocations.map((loc) => (
             <Link to={`/location/${loc._id}`} key={loc._id} className="block">
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <h2 className="text-xl font-semibold mb-2 text-indigo-700">{loc.name}</h2>
+                <h2 className="text-xl font-semibold mb-2 text-indigo-700">
+                  {loc.name}
+                </h2>
                 <p className="text-gray-600 mb-4">{loc.description}</p>
                 <div className="flex items-center text-indigo-600">
                   <MapPin className="w-5 h-5 mr-2" />
@@ -146,8 +179,7 @@ const NearLocation = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default NearLocation
-
+export default NearLocation;
