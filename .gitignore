@@ -72,6 +72,9 @@ jspm_packages/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
+venv/
+__pycache__/
+
 # TypeScript cache
 *.tsbuildinfo
 
@@ -146,3 +149,4 @@ dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 .DS_Store
+
