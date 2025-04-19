@@ -13,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app"],  # Your React app URL
+    allow_origins=["http://localhost:5173","https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
