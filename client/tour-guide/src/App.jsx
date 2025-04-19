@@ -12,6 +12,7 @@ import LocationDetails from "./pages/LocationDetails"
 import SearchLocations from "./pages/SearchLocations"
 import Register from "./pages/Register"
 import Profile from "./pages/Profile"
+import AudioGeneration from "./pages/AudioGeneration"
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
                   <Routes>
                     {/* Admin Routes */}
                     <Route path="/admin" element={<PrivateRoute adminOnly={true} />}>
+                      <Route path="generate" element={<AudioGeneration />} />
                       <Route index element={<Navigate to="locations" replace />} />
                       <Route path="locations" element={<AdminLocations />} />
                       <Route path="locations/new" element={<LocationForm />} />
