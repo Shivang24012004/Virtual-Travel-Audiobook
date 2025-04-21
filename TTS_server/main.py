@@ -6,6 +6,7 @@ from fastapi.responses import Response,StreamingResponse
 from utils import generate_audio_file_edgeTTS,generate_content
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 load_dotenv()
 
@@ -48,5 +49,5 @@ async def generate_audio(request:AudioRequest):
 
 @app.get("/")
 def root():
-    return {"message": "FastAPI server is running!"}
+    return {"message": f"FastAPI server is running and processId {os.getpid()}!"}
     
