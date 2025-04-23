@@ -50,6 +50,15 @@ app.get("/",async(req,res)=>{
   }
 })
 
+
+app.head("/", (req, res) => {
+  res.status(200)
+     .header('Server-Status', 'up')
+     .header('Uptime', process.uptime() + 's')
+     .header('Memory-Usage', JSON.stringify(process.memoryUsage()))
+     .send();
+});
+
 const PORT = process.env.PORT || 5000; 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
