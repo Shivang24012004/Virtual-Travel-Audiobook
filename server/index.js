@@ -52,11 +52,8 @@ app.get("/",async(req,res)=>{
 
 
 app.head("/", (req, res) => {
-  res.status(200)
-     .header('Server-Status', 'up')
-     .header('Uptime', process.uptime() + 's')
-     .header('Memory-Usage', JSON.stringify(process.memoryUsage()))
-     .send();
+  console.log("Health Check Success");
+  res.status(200).send();
 });
 
 const PORT = process.env.PORT || 5000; 
