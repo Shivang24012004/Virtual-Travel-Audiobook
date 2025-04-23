@@ -18,7 +18,7 @@ connectDB();
 app.set('trust proxy', 1);  //temp
 
 app.use(cors({
-  origin: ["http://localhost:5173","https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app"],
+  origin: ["http://localhost:5173","https://virtual-travel-audiobook-frontend-shivang24012004s-projects.vercel.app","https://uptimerobot.com"],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']  //temp
 }));
@@ -52,8 +52,10 @@ app.get("/",async(req,res)=>{
 
 
 app.head("/", (req, res) => {
-  console.log("Health Check Success");
-  res.status(200).send();
+  res.status(200)
+     .header('X-Uptime', process.uptime())
+     .header('X-Server-Status', 'online')
+     .end();
 });
 
 const PORT = process.env.PORT || 5000; 
