@@ -11,13 +11,13 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  // Initialize user state from localStorage
+  // Initialize user state from sessionStorage
   const [user, setUser] = useState(() => {
     try {
-      const savedUser = localStorage.getItem("user");
+      const savedUser = sessionStorage.getItem("user");
       return savedUser ? JSON.parse(savedUser) : null;
     } catch (error) {
-      console.error("Error parsing user from localStorage:", error);
+      console.error("Error parsing user from sessionStorage:", error);
       return null;
     }
   });
@@ -197,12 +197,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Update localStorage when user changes
+  // Update sessionStorage when user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
     }
   }, [user]);
 
