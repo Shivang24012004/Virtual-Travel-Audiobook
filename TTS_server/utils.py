@@ -2,6 +2,12 @@ from io import BytesIO
 import edge_tts
 from groq import Groq
 import os
+from langchain_community.retrievers import WikipediaRetriever
+from langchain.chat_models import init_chat_model
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+
 
 async def generate_audio_file_edgeTTS(text:str) -> BytesIO:
     mp3_fp = BytesIO()
@@ -15,25 +21,24 @@ async def generate_audio_file_edgeTTS(text:str) -> BytesIO:
     return mp3_fp
 
 async def generate_content(location:str) -> str:
+    retriever = WikipediaRetriever()
+    llm = init_chat_model("llama3-8b-8192", model_provider="groq")
+    docs = retriever.invoke(location)
+    context_text = "\n\n".join(d.page_content for d in docs)
     
-    API_KEY = os.getenv("GROQ_API_KEY")
-    client = Groq(api_key=API_KEY)
-    system_prompt = "You are a professional tour guide. Provide interesting and informative details about the location in a conversational tone suitable for an audio guide."
-    
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"Create a brief audio tour guide script for {location}. Include historical facts, points of interest, and cultural significance. Note : Do not give in markdown format use regular text."}
-    ]
-    
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=messages,
-        temperature=0.7,
-        max_tokens=1024,
-        top_p=1,
-        stream=False,
-        stop=None,
+    prompt = ChatPromptTemplate.from_template(
+        """
+        You are a tour guide expert. Using only the provided context, write a single, self-contained paragraph describing the location.
+        Do not include any personal information, headings, labels, or extra commentary—output only the paragraph text.
+        Context: {context}
+        Question: {question}
+        """
     )
-    tour_guide_script = completion.choices[0].message.content
-    return tour_guide_script    
+    chain = prompt | llm | StrOutputParser()
+    output = chain.invoke({
+        "context": context_text,
+        "question":  "Generate a compelling and informative piece of content, between 250 to 350 words, written in a single paragraph format. The content should be engaging, insightful, and based solely on the provided context without introducing any external information."
+    })
+    return output
+    
     

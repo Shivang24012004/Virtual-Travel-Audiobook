@@ -3,3 +3,6 @@ uvicorn
 groq
 edge-tts
 python-dotenv
+langchain_community
+wikipedia
+langchain[groq]
